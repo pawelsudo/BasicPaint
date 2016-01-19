@@ -55,6 +55,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helpers\PluginHelper.cs" />
+    <Compile Include="Models\ToolItem.cs" />
     <Compile Include="Shapes\CircleShape.cs" />
     <Compile Include="Shapes\IMyShape.cs" />
     <Compile Include="Shapes\RectangleShape.cs" />
@@ -106,6 +108,13 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PluginInterface\PluginInterface.csproj">
+      <Project>{9b443349-527b-4894-90ea-a026eaa99aa8}</Project>
+      <Name>PluginInterface</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,5 +1,7 @@
 ﻿using Microsoft.Win32;
+using PluginInterface;
 using Projekt_TPAL.Helpers;
+using Projekt_TPAL.Models;
 using Projekt_TPAL.Shapes;
 using System;
 using System.Collections.Generic;
@@ -29,11 +31,14 @@ namespace Projekt_TPAL
         private bool isFileOpen = false;
         private bool isFileSave = false;
         private SaveHelper saveHelper = new SaveHelper();
+        private PluginHelper pluginHelper = new PluginHelper();
         List<List<Shape>> history = new List<List<Shape>>();
         List<List<Shape>> removed = new List<List<Shape>>();
+        List<ToolItem> tools = new List<ToolItem>();
         Canvas canvas;
 
-        IMyShape myShape;
+        //IMyShape myShape;
+        IPlugin tool;
 
         public MainWindow()
         {
@@ -41,19 +46,32 @@ namespace Projekt_TPAL
             InitializeComponent();
             UpdateStatusBar();
             UpdateBtnColor();
+            var plugins = pluginHelper.InitializePlugins();
+
+            foreach (var plugin in plugins)
+            {
+                plugin.Initialize();             
+                tools.Add(new ToolItem() { Tool = plugin, Name = plugin.GetName() });
+            }
+
+            toolsListView.ItemsSource = tools;
+
         }
 
         #region MenuActions
 
         private void UndoMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var item in history.Last())
+            if (history.Count() > 0)
             {
-                canvas.Children.Remove(item);
+                foreach (var item in history.Last())
+                {
+                    canvas.Children.Remove(item);
+                }
+                removed.Add(history.Last());
+                history.Remove(history.Last());
             }
-            removed.Add(history.Last());
-            history.Remove(history.Last());
-           
+
         }
 
         private void RedoMenuItem_Click(object sender, RoutedEventArgs e)
@@ -125,51 +143,38 @@ namespace Projekt_TPAL
 
         private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (myShape != null)
+            if (tool != null)
             {
-                var shapes = myShape.EndDrawing();
+                var shapes = tool.EndDrawing();
                 history.Add(shapes);
             }
         }
 
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (myShape != null)
-                myShape.CreateShape(Mouse.GetPosition(canvas));
+            if (tool != null)
+                tool.CreateShape(Mouse.GetPosition(canvas));
         }
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (myShape != null)
-                myShape.Draw(Mouse.GetPosition(canvas));
+            if (tool != null)
+                tool.Draw(Mouse.GetPosition(canvas));
         }
 
         #endregion
 
-        #region ButtonEvents
+        #region ButtonEvents       
 
-        private void rectangleBtn_Click(object sender, RoutedEventArgs e)
+        private void toolBtn_Click(object sender, RoutedEventArgs e)
         {
-            myShape = new RectangleShape(canvas, Brushes.Black, 2, Brushes.LightBlue);
-            UpdateBtnColor((Button)sender);
-        }
+            if (tools != null)
+            {
+                var plugin = tools.First().Tool;
+                tool = plugin.Initialize(canvas, Brushes.Black, 2, Brushes.LightBlue);
 
-        private void circleBtn_Click(object sender, RoutedEventArgs e)
-        {
-            myShape = new CircleShape(canvas, Brushes.Black, 2, Brushes.LightBlue);
-            UpdateBtnColor((Button)sender);
-        }
-
-        private void lineBtn_Click(object sender, RoutedEventArgs e)
-        {
-            myShape = new LineShape(canvas, Brushes.Black, 2);
-            UpdateBtnColor((Button)sender);
-        }
-
-        private void penBtn_Click(object sender, RoutedEventArgs e)
-        {
-            myShape = new LineShape(canvas, Brushes.Black, 2);
-            UpdateBtnColor((Button)sender);
+                UpdateBtnColor((Button)sender);
+            }
         }
 
         #endregion
@@ -217,10 +222,10 @@ namespace Projekt_TPAL
 
         private void UpdateBtnColor(Button activeBtn = null)
         {
-            rectangleBtn.Background = Brushes.LightGray;
-            circleBtn.Background = Brushes.LightGray;
-            lineBtn.Background = Brushes.LightGray;
-            penBtn.Background = Brushes.LightGray;
+            //rectangleBtn.Background = Brushes.LightGray;
+            //circleBtn.Background = Brushes.LightGray;
+            //lineBtn.Background = Brushes.LightGray;
+            //penBtn.Background = Brushes.LightGray;
 
             if (activeBtn != null)
                 activeBtn.Background = Brushes.Gray;

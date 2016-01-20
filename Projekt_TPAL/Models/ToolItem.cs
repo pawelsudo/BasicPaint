@@ -1,7 +1,6 @@
 ﻿using PluginInterface;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,5 +13,6 @@ namespace Projekt_TPAL.Models
         public string Name { get; set; }
         public IPlugin Tool { get; set; }
         public ImageSource BackgroundImg { get; set; }
+        public Brush ActiveToolColor { get; set; }
     }
 }

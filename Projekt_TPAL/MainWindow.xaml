@@ -48,7 +48,7 @@
                 </ListView.ItemsPanel>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Button Width="28" Height="28" HorizontalAlignment="Left" Margin="1,4,1,4" Click="toolBtn_Click">
+                        <Button Width="28" Height="28" HorizontalAlignment="Left" Margin="1,4,1,4" Background="{Binding ActiveToolColor}" Click="toolBtn_Click">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="{Binding BackgroundImg}" />
                             </StackPanel>
@@ -56,14 +56,6 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <!--<Grid>
-                <Button x:Name="rectangleBtn" Width="25" Height="25" HorizontalAlignment="Left" Margin="5" Content="rect" Click="rectangleBtn_Click"/>
-                <Button x:Name="circleBtn" Width="25" Height="25" HorizontalAlignment="Right" Margin="5" Content="circ" Click="circleBtn_Click"/>
-            </Grid>
-            <Grid>
-                <Button x:Name="lineBtn" Width="25" Height="25" HorizontalAlignment="Left" Margin="5" Content="line" Click="lineBtn_Click"/>
-                <Button x:Name="penBtn" Width="25" Height="25" HorizontalAlignment="Right" Margin="5" Content="pen" Click="penBtn_Click"/>
-            </Grid>-->
         </ToolBarPanel>
 
         <ScrollViewer x:Name="scrollViewer" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">

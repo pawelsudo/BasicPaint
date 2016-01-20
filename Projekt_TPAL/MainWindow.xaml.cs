@@ -51,7 +51,7 @@ namespace Projekt_TPAL
             foreach (var plugin in plugins)
             {
                 plugin.Initialize();
-                tools.Add(new ToolItem() { Tool = plugin, BackgroundImg = CreateBitmapSourceFromBitmap(plugin.btnBackground) });
+                tools.Add(new ToolItem() { Tool = plugin, Name = plugin.GetName(), BackgroundImg = CreateBitmapSourceFromBitmap(plugin.btnBackground) });
             }
 
             toolsListView.ItemsSource = tools;
@@ -60,7 +60,7 @@ namespace Projekt_TPAL
 
         public BitmapSource CreateBitmapSourceFromBitmap(System.Drawing.Bitmap bitmap)
         {
-            
+
             return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
                 bitmap.GetHbitmap(),
                 IntPtr.Zero,
@@ -179,12 +179,13 @@ namespace Projekt_TPAL
         private void toolBtn_Click(object sender, RoutedEventArgs e)
         {
             var toolItem = (ToolItem)((Button)sender).DataContext;
+            
             if (toolItem != null)
             {
                 var plugin = toolItem.Tool;
                 tool = plugin.Initialize(canvas, Brushes.Black, 2, Brushes.LightBlue);
 
-                UpdateBtnColor((Button)sender);
+                UpdateBtnColor(toolItem);
             }
         }
 
@@ -231,10 +232,19 @@ namespace Projekt_TPAL
             return false;
         }
 
-        private void UpdateBtnColor(Button activeBtn = null)
-        {           
-            if (activeBtn != null)
-                activeBtn.Background = Brushes.Red;
+        private void UpdateBtnColor(ToolItem toolItem = null)
+        {
+            foreach (var item in tools)
+            {
+                if (toolItem != null && toolItem.Name == item.Name)
+                    item.ActiveToolColor = Brushes.Red;
+                else
+                    item.ActiveToolColor = Brushes.White;
+
+                toolsListView.ItemsSource = null;
+                toolsListView.ItemsSource = tools;
+
+            }
         }
 
 

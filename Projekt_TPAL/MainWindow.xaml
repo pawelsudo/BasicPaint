@@ -38,13 +38,21 @@
             </StatusBarItem>
         </StatusBar>
 
-        <ToolBarPanel Background="#FFF0F0F0" DockPanel.Dock="Left" Width="70">
-            <ListView x:Name="toolsListView">
+        <ToolBarPanel Background="#FFF0F0F0" DockPanel.Dock="Left" Width="85">
+            <ListView x:Name="toolsListView" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal">
+                        </WrapPanel>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <WrapPanel Orientation="Horizontal">
-                            <Button Width="25" Height="25" HorizontalAlignment="Left" Margin="5" Content="{Binding Name}" Click="toolBtn_Click"/>
-                        </WrapPanel>
+                        <Button Width="28" Height="28" HorizontalAlignment="Left" Margin="1,4,1,4" Click="toolBtn_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{Binding BackgroundImg}" />
+                            </StackPanel>
+                        </Button>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -60,7 +68,7 @@
 
         <ScrollViewer x:Name="scrollViewer" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
             <Grid x:Name="pictureGrid" Background="LightGray" ScrollViewer.CanContentScroll="True"/>
-            
+
         </ScrollViewer>
 
     </DockPanel>

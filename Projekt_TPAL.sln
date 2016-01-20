@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginInterface", "PluginIn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.CircleTool", "Plugin.CircleTool\Plugin.CircleTool.csproj", "{95414DD2-5E62-465F-853E-533451025848}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.RectangleTool", "Plugin.RectangleTool\Plugin.RectangleTool.csproj", "{2BA336EA-94C2-4772-A35E-F1DEA8B95DEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.LineTool", "Plugin.LineTool\Plugin.LineTool.csproj", "{D62675D5-8F2F-43ED-B95E-D49EA24251B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{95414DD2-5E62-465F-853E-533451025848}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95414DD2-5E62-465F-853E-533451025848}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95414DD2-5E62-465F-853E-533451025848}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BA336EA-94C2-4772-A35E-F1DEA8B95DEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BA336EA-94C2-4772-A35E-F1DEA8B95DEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BA336EA-94C2-4772-A35E-F1DEA8B95DEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BA336EA-94C2-4772-A35E-F1DEA8B95DEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D62675D5-8F2F-43ED-B95E-D49EA24251B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D62675D5-8F2F-43ED-B95E-D49EA24251B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D62675D5-8F2F-43ED-B95E-D49EA24251B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D62675D5-8F2F-43ED-B95E-D49EA24251B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

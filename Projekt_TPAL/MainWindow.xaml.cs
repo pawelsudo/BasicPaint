@@ -50,12 +50,22 @@ namespace Projekt_TPAL
 
             foreach (var plugin in plugins)
             {
-                plugin.Initialize();             
-                tools.Add(new ToolItem() { Tool = plugin, Name = plugin.GetName() });
+                plugin.Initialize();
+                tools.Add(new ToolItem() { Tool = plugin, BackgroundImg = CreateBitmapSourceFromBitmap(plugin.btnBackground) });
             }
 
             toolsListView.ItemsSource = tools;
 
+        }
+
+        public BitmapSource CreateBitmapSourceFromBitmap(System.Drawing.Bitmap bitmap)
+        {
+            
+            return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                bitmap.GetHbitmap(),
+                IntPtr.Zero,
+                Int32Rect.Empty,
+                BitmapSizeOptions.FromEmptyOptions());
         }
 
         #region MenuActions
@@ -168,9 +178,10 @@ namespace Projekt_TPAL
 
         private void toolBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (tools != null)
+            var toolItem = (ToolItem)((Button)sender).DataContext;
+            if (toolItem != null)
             {
-                var plugin = tools.First().Tool;
+                var plugin = toolItem.Tool;
                 tool = plugin.Initialize(canvas, Brushes.Black, 2, Brushes.LightBlue);
 
                 UpdateBtnColor((Button)sender);
@@ -221,14 +232,9 @@ namespace Projekt_TPAL
         }
 
         private void UpdateBtnColor(Button activeBtn = null)
-        {
-            //rectangleBtn.Background = Brushes.LightGray;
-            //circleBtn.Background = Brushes.LightGray;
-            //lineBtn.Background = Brushes.LightGray;
-            //penBtn.Background = Brushes.LightGray;
-
+        {           
             if (activeBtn != null)
-                activeBtn.Background = Brushes.Gray;
+                activeBtn.Background = Brushes.Red;
         }
 
 

@@ -9,13 +9,13 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Plugin.CircleTool
+namespace Plugin.RectangleTool
 {
-    public class CircleTool : IPlugin
+    public class RectangleTool:IPlugin
     {
-        private Ellipse circle;
-        public Canvas canvas { get; set; }    
-        public Brush fill { get; set; }      
+        private Rectangle rectangle;
+        public Canvas canvas { get; set; }
+        public Brush fill { get; set; }
         public Brush stroke { get; set; }
         public double strokeThickness { get; set; }
         public System.Drawing.Bitmap btnBackground { get; set; }
@@ -23,8 +23,8 @@ namespace Plugin.CircleTool
 
         public void Initialize()
         {
-            this.name = "Circle";
-            this.btnBackground = Resource1.circle;
+            this.name = "Rectangle";
+            this.btnBackground = Resource1.rectangle;
         }
 
         public string GetName()
@@ -44,33 +44,32 @@ namespace Plugin.CircleTool
 
         public void CreateShape(Point mousePoint)
         {
-            circle = new Ellipse();
+            rectangle = new Rectangle();
             if (fill != null)
-                circle.Fill = fill;
-            circle.Stroke = stroke;
-            circle.StrokeThickness = strokeThickness;
-            circle.Margin = new Thickness(mousePoint.X, mousePoint.Y, 0, 0);
+                rectangle.Fill = fill;
+            rectangle.Stroke = stroke;
+            rectangle.StrokeThickness = strokeThickness;
+            rectangle.Margin = new Thickness(mousePoint.X, mousePoint.Y, 0, 0);
 
-            canvas.Children.Add(circle);
+            canvas.Children.Add(rectangle);
         }
 
         public void Draw(Point mousePoint)
         {
-            if (circle != null)
+            if (rectangle != null)
             {
-                var width = mousePoint.X - circle.Margin.Left;
-                var height = mousePoint.Y - circle.Margin.Top;
-
-                circle.Width = width > 0 ? width : 1;
-                circle.Height = height > 0 ? height : 1;
+                var width = mousePoint.X - rectangle.Margin.Left;
+                var height = mousePoint.Y - rectangle.Margin.Top;
+                rectangle.Width = width > 0 ? width : 1;
+                rectangle.Height = height > 0 ? height : 1;
             }
         }
 
         public List<Shape> EndDrawing()
         {
             var shapes = new List<Shape>();
-            shapes.Add(circle);
-            circle = null;
+            shapes.Add(rectangle);
+            rectangle = null;
 
             return shapes;
         }
@@ -79,6 +78,5 @@ namespace Plugin.CircleTool
         {
 
         }
-
     }
 }

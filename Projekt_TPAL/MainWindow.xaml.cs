@@ -36,6 +36,9 @@ namespace Projekt_TPAL
         List<List<Shape>> removed = new List<List<Shape>>();
         List<ToolItem> tools = new List<ToolItem>();
         Canvas canvas;
+        private Brush stroke;
+        private Brush fill;
+
 
         //IMyShape myShape;
         IPlugin tool;
@@ -55,6 +58,9 @@ namespace Projekt_TPAL
             }
 
             toolsListView.ItemsSource = tools;
+
+            stroke = Brushes.Black;
+            fill = Brushes.White;
 
         }
 
@@ -183,10 +189,26 @@ namespace Projekt_TPAL
             if (toolItem != null)
             {
                 var plugin = toolItem.Tool;
-                tool = plugin.Initialize(canvas, Brushes.Black, 2, Brushes.LightBlue);
+                tool = plugin.Initialize(canvas, stroke, 2, fill);
 
                 UpdateBtnColor(toolItem);
             }
+        }
+
+        #endregion
+
+        #region ColorPickersEvents
+
+        private void strokeColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+            stroke = new SolidColorBrush(strokeColorPicker.SelectedColor.Value);
+            tool.SetStroke(stroke);
+        }
+
+        private void fillColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+            fill = new SolidColorBrush(fillColorPicker.SelectedColor.Value);
+            tool.SetFill(fill);
         }
 
         #endregion
@@ -249,8 +271,7 @@ namespace Projekt_TPAL
 
 
 
-        #endregion
 
-
+        #endregion       
     }
 }

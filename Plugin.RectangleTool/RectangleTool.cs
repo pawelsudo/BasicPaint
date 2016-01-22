@@ -78,5 +78,20 @@ namespace Plugin.RectangleTool
         {
 
         }
+
+        public void SetStroke(Brush stroke)
+        {
+            this.stroke = stroke;
+        }
+
+        public void SetFill(Brush fill)
+        {
+            this.fill = fill;
+        }
+
+        public void SetThickness(int thickness)
+        {
+            this.strokeThickness = thickness;
+        }
     }
 }

@@ -14,9 +14,11 @@ namespace PluginInterface
     {
         //MenuItem GetMenuItem();
 
-        //void SetColor(Brush color);
+        void SetStroke(Brush stroke);
 
-        //void SetThickness(int thickness);  
+        void SetFill(Brush fill);
+
+        void SetThickness(int thickness);  
 
         string GetName();
         void Initialize();

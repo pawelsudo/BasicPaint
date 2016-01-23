@@ -34,6 +34,7 @@ namespace PluginInterface
         Brush stroke { get; set; }
         double strokeThickness { get; set; }
         System.Drawing.Bitmap btnBackground { get; set; }
+        bool canFill { get; set; }
 
     }
 }

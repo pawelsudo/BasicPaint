@@ -6,41 +6,41 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:Projekt_TPAL"
         mc:Ignorable="d"
-        Title="{Binding Path=MainWindowTitle, Source={StaticResource Resources}}" 
+        Title="Painter" 
         Height="350" Width="525" WindowState="Maximized">
     <DockPanel x:Name="dockPanel" Background="Gray">
         <Menu x:Name="menu" Height="23" VerticalAlignment="Top" DockPanel.Dock="Top">
             <MenuItem Header="{Binding Path=File, Source={StaticResource Resources}}">
-                <MenuItem Header="{Binding Path=New, Source={StaticResource Resources}}" Click="NewMenuItem_Click"/>
-                <MenuItem Header="{Binding Path=Open, Source={StaticResource Resources}}" />
-                <MenuItem Header="{Binding Path=Save, Source={StaticResource Resources}}" />
-                <MenuItem Header="{Binding Path=SaveAs, Source={StaticResource Resources}}" />
-                <MenuItem Header="{Binding Path=Close, Source={StaticResource Resources}}" Click="CloseMenuItem_Click"/>
+                <MenuItem Header="{Binding Path=New, Source={StaticResource Resources}}" x:Name="newMenuItem" Click="NewMenuItem_Click"/>
+                <MenuItem Header="{Binding Path=Save, Source={StaticResource Resources}}" x:Name="saveMenuItem" Click="SaveMenuItem_Click" />
+                <MenuItem Header="{Binding Path=Close, Source={StaticResource Resources}}" x:Name="closeMenuItem" Click="CloseMenuItem_Click"/>
                 <Separator />
                 <MenuItem Header="{Binding Path=Exit, Source={StaticResource Resources}}" Click="ExitMenuItem_Click" />
             </MenuItem>
             <MenuItem Header="{Binding Path=Edit, Source={StaticResource Resources}}">
-                <MenuItem Header="{Binding Path=Undo, Source={StaticResource Resources}}" Click="UndoMenuItem_Click"/>
-                <MenuItem Header="{Binding Path=Redo, Source={StaticResource Resources}}" Click="RedoMenuItem_Click"/>
+                <MenuItem Header="{Binding Path=Undo, Source={StaticResource Resources}}" x:Name="undoMenuItem" IsEnabled="False" Click="UndoMenuItem_Click"/>
+                <MenuItem Header="{Binding Path=Redo, Source={StaticResource Resources}}" x:Name="redoMenuItem" IsEnabled="False" Click="RedoMenuItem_Click"/>
             </MenuItem>
             <MenuItem Header="{Binding Path=Tools, Source={StaticResource Resources}}">
-                <MenuItem Header="{Binding Path=Options, Source={StaticResource Resources}}"/>
+                <MenuItem Header="{Binding Path=Plugins, Source={StaticResource Resources}}" Click="PluginsMenuItem_Click" />
                 <MenuItem Header="{Binding Path=Language, Source={StaticResource Resources}}">
                     <MenuItem Name="EnglishMenuItem" Header="{Binding Path=EnglishMenuItem, Source={StaticResource Resources}}" IsCheckable="True" Click="ChangeLanguageMenuItem_Click" IsChecked="True" />
                     <MenuItem Name="PolishMenuItem" Header="{Binding Path=PolishMenuItem, Source={StaticResource Resources}}" IsCheckable="True" Click="ChangeLanguageMenuItem_Click"/>
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="{Binding Path=Help, Source={StaticResource Resources}}"/>
+            <MenuItem Header="{Binding Path=Help, Source={StaticResource Resources}}" Click="HelpMenuItem_Click"/>
         </Menu>
         <ToolBarPanel Height="23" VerticalAlignment="Top" Background="#FFF0F0F0" DockPanel.Dock="Top"/>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
+
             <StatusBarItem HorizontalAlignment="Right">
-                <TextBlock x:Name="StatusBarLabel"/>
+                <ProgressBar x:Name="saveProgressBar" Margin="0,0,4,0" Height="17" Width="100"/>
+                    <!--<TextBlock x:Name="StatusBarLabel"/>-->             
             </StatusBarItem>
         </StatusBar>
 
         <ToolBarPanel Background="#FFF0F0F0" DockPanel.Dock="Left" Width="85">
-            <ListView x:Name="toolsListView" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MaxHeight="400">
+            <ListView x:Name="toolsListView" Background="#FFF0F0F0" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MaxHeight="400">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal">
@@ -57,8 +57,21 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <xctk:ColorPicker Name="strokeColorPicker" SelectedColorChanged="strokeColorPicker_SelectedColorChanged"></xctk:ColorPicker>
-            <xctk:ColorPicker Name="fillColorPicker" SelectedColorChanged="fillColorPicker_SelectedColorChanged"></xctk:ColorPicker>
+            <StackPanel x:Name="propertiesGrid">
+                <TextBlock Margin="4,1,4,1" Text="{Binding Path=Stroke, Source={StaticResource Resources}}"/>
+                <xctk:ColorPicker Margin="4,1,4,1" Name="strokeColorPicker" SelectedColorChanged="strokeColorPicker_SelectedColorChanged"></xctk:ColorPicker>
+                <TextBlock x:Name="fillTB" Margin="4,1,4,1" Text="{Binding Path=Fill, Source={StaticResource Resources}}"/>
+                <xctk:ColorPicker Margin="4,1,4,1" Name="fillColorPicker" SelectedColorChanged="fillColorPicker_SelectedColorChanged"></xctk:ColorPicker>
+                <TextBlock Margin="4,1,4,1" Text="{Binding Path=StrokeThickness, Source={StaticResource Resources}}"/>
+                <ComboBox x:Name="strokeThicknessCB" Margin="4,1,4,1" SelectionChanged="strokeThicknessCB_SelectionChanged">
+                    <ComboBoxItem Name="cbi1">1</ComboBoxItem>
+                    <ComboBoxItem Name="cbi2">2</ComboBoxItem>
+                    <ComboBoxItem Name="cbi3">3</ComboBoxItem>
+                    <ComboBoxItem Name="cbi4">4</ComboBoxItem>
+                    <ComboBoxItem Name="cbi5">5</ComboBoxItem>
+                    <ComboBoxItem Name="cbi6">6</ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
         </ToolBarPanel>
 
         <ScrollViewer x:Name="scrollViewer" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">

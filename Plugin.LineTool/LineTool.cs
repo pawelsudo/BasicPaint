@@ -23,6 +23,8 @@ namespace Plugin.LineTool
 
         public double strokeThickness { get; set; }
 
+        public bool canFill { get; set; }
+
         private string name;
 
         private Line line;
@@ -66,6 +68,7 @@ namespace Plugin.LineTool
             this.canvas = canvas;
             this.stroke = stroke;
             this.strokeThickness = strokeThickness;
+            this.canFill = false;
 
             return this;
         }

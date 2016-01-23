@@ -132,6 +132,9 @@
   <data name="File" xml:space="preserve">
     <value>Plik</value>
   </data>
+  <data name="Fill" xml:space="preserve">
+    <value>Wypełnienie:</value>
+  </data>
   <data name="Help" xml:space="preserve">
     <value>Pomoc</value>
   </data>
@@ -150,6 +153,12 @@
   <data name="Options" xml:space="preserve">
     <value>Opcje</value>
   </data>
+  <data name="Plugins" xml:space="preserve">
+    <value>Wtyczki</value>
+  </data>
+  <data name="PluginsError" xml:space="preserve">
+    <value>Nie znaleziono wtyczek</value>
+  </data>
   <data name="PolishMenuItem" xml:space="preserve">
     <value>Polski</value>
   </data>
@@ -163,7 +172,13 @@
     <value>Zapisz jako</value>
   </data>
   <data name="SaveConfirmation" xml:space="preserve">
-    <value>Zapisz zmiany w pliku.</value>
+    <value>Zapisz zmiany w pliku</value>
+  </data>
+  <data name="Stroke" xml:space="preserve">
+    <value>Linia:</value>
+  </data>
+  <data name="StrokeThickness" xml:space="preserve">
+    <value>Rozmiar:</value>
   </data>
   <data name="Tools" xml:space="preserve">
     <value>Narzędzia</value>

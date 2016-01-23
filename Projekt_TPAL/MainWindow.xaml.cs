@@ -5,6 +5,7 @@ using Projekt_TPAL.Models;
 using Projekt_TPAL.Shapes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using System.Windows.Threading;
 
 namespace Projekt_TPAL
 {
@@ -38,18 +39,21 @@ namespace Projekt_TPAL
         Canvas canvas;
         private Brush stroke;
         private Brush fill;
-
-
-        //IMyShape myShape;
+        private int strokeThickness;
+   
         IPlugin tool;
 
-        public MainWindow()
+        private readonly BackgroundWorker worker = new BackgroundWorker();
+
+        private void InitializePlugins()
         {
-            CultureResources.ChangeCulture(new CultureInfo("en"));
-            InitializeComponent();
-            UpdateStatusBar();
-            UpdateBtnColor();
-            var plugins = pluginHelper.InitializePlugins();
+            tools = new List<ToolItem>();
+            if (string.IsNullOrEmpty(pluginsDirectory))
+                return;
+            var plugins = pluginHelper.InitializePlugins(pluginsDirectory);
+
+            if(plugins.Count() == 0)
+                tools = null;
 
             foreach (var plugin in plugins)
             {
@@ -58,10 +62,56 @@ namespace Projekt_TPAL
             }
 
             toolsListView.ItemsSource = tools;
+        }
 
-            stroke = Brushes.Black;
-            fill = Brushes.White;
+        public MainWindow()
+        {
+            CultureResources.ChangeCulture(new CultureInfo("en"));
+            InitializeComponent();
+            //UpdateStatusBar();
+            UpdateBtnColor();
 
+            InitializePlugins();
+
+            fillColorPicker.SelectedColor = Color.FromRgb(255, 255, 255);
+            strokeColorPicker.SelectedColor = Color.FromRgb(0, 0, 0);
+            strokeThicknessCB.SelectedIndex = 0;
+            propertiesGrid.Visibility = Visibility.Hidden;
+            toolsListView.IsEnabled = false;
+            this.Closing += MainWindow_Closing;
+            worker.DoWork += worker_DoWork;
+            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+            worker.ProgressChanged += worker_ProgressChanged;
+            worker.WorkerReportsProgress = true;
+            closeMenuItem.IsEnabled = false;
+            saveMenuItem.IsEnabled = false;
+
+        }
+
+        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            saveProgressBar.Value = e.ProgressPercentage * 20;
+        }
+
+        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            saveProgressBar.Value = 0;
+        }
+
+        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            for (int i = 1; i <= 6; ++i)
+            {
+                if (i == 3 || i == 4)
+                    Thread.Sleep(200);
+                else
+                    Thread.Sleep(1000);
+                worker.ReportProgress(i);
+            }
+
+            Application.Current.Dispatcher.BeginInvoke(
+                DispatcherPriority.Background,
+                    new Action(() => saveHelper.SaveFile(canvas, saveFileDialog.FileName)));
         }
 
         public BitmapSource CreateBitmapSourceFromBitmap(System.Drawing.Bitmap bitmap)
@@ -86,6 +136,7 @@ namespace Projekt_TPAL
                 }
                 removed.Add(history.Last());
                 history.Remove(history.Last());
+                SetUndoRedoEnabled();
             }
 
         }
@@ -98,6 +149,7 @@ namespace Projekt_TPAL
             {
                 canvas.Children.Add(item);
             }
+            SetUndoRedoEnabled();
         }
 
         private void ChangeLanguageMenuItem_Click(object sender, RoutedEventArgs e)
@@ -107,11 +159,11 @@ namespace Projekt_TPAL
             CultureResources.ChangeCulture(new CultureInfo(setPolishCulture ? "pl" : "en"));
             PolishMenuItem.IsChecked = setPolishCulture;
             EnglishMenuItem.IsChecked = !setPolishCulture;
-            UpdateStatusBar();
+            //UpdateStatusBar();
         }
 
         private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
-        {
+        {          
             this.Close();
         }
 
@@ -132,9 +184,53 @@ namespace Projekt_TPAL
 
             isFileOpen = true;
             isFileSave = false;
+            toolsListView.IsEnabled = true;
+            closeMenuItem.IsEnabled = true;
+            saveMenuItem.IsEnabled = true;
+        }
+
+        private void SaveMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (isFileOpen && !isFileSave)
+                SaveFileConfirmation();
+            isFileSave = false;
         }
 
         private void CloseMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ClearDrawingArea();
+        }
+
+        string pluginsDirectory = "Plugins";
+        private void PluginsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            System.Windows.Forms.DialogResult result = folderBrowserDialog1.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                pluginsDirectory = folderBrowserDialog1.SelectedPath;
+                InitializePlugins();
+                propertiesGrid.Visibility = Visibility.Hidden;
+                toolsListView.IsEnabled = false;
+                tool = null;
+            }
+
+            if (tools != null && tools.Count() > 0)
+                toolsListView.Visibility = Visibility.Visible;
+            else
+            {
+                toolsListView.Visibility = Visibility.Hidden;
+                MessageBox.Show(Properties.Resources.PluginsError, Properties.Resources.Plugins);
+            }
+
+        }
+
+        private void HelpMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("", Properties.Resources.Help);
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             ClearDrawingArea();
         }
@@ -163,6 +259,7 @@ namespace Projekt_TPAL
             {
                 var shapes = tool.EndDrawing();
                 history.Add(shapes);
+                SetUndoRedoEnabled();                
             }
         }
 
@@ -189,38 +286,62 @@ namespace Projekt_TPAL
             if (toolItem != null)
             {
                 var plugin = toolItem.Tool;
-                tool = plugin.Initialize(canvas, stroke, 2, fill);
+                tool = plugin.Initialize(canvas, stroke, strokeThickness, fill);
 
+                propertiesGrid.Visibility = Visibility.Visible;
+                HideFillClrPicker(tool);
                 UpdateBtnColor(toolItem);
             }
         }
 
         #endregion
 
-        #region ColorPickersEvents
+        #region ToolsEvents
 
         private void strokeColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
             stroke = new SolidColorBrush(strokeColorPicker.SelectedColor.Value);
-            tool.SetStroke(stroke);
+            if(tool!=null)
+                tool.SetStroke(stroke);
         }
 
         private void fillColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
             fill = new SolidColorBrush(fillColorPicker.SelectedColor.Value);
-            tool.SetFill(fill);
+            if(tool!=null)
+                tool.SetFill(fill);
+        }
+
+        private void strokeThicknessCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            strokeThickness = Convert.ToInt32(((ComboBoxItem)strokeThicknessCB.SelectedItem).Content);
+            if(tool!=null)
+                tool.SetThickness(strokeThickness);
         }
 
         #endregion
 
         #region Helpers
 
-        private void UpdateStatusBar()
+        private void SetUndoRedoEnabled()
         {
-            DateTime dt = DateTime.Now;
-            StatusBarLabel.Text = dt.ToString("d", Properties.Resources.Culture) + "    " +
-                dt.ToString("t", Properties.Resources.Culture);
+            if (history.Count() > 0)
+                undoMenuItem.IsEnabled = true;
+            else
+                undoMenuItem.IsEnabled = false;
+
+            if (removed.Count() > 0)
+                redoMenuItem.IsEnabled = true;
+            else
+                redoMenuItem.IsEnabled = false;
         }
+
+        //private void UpdateStatusBar()
+        //{
+        //    DateTime dt = DateTime.Now;
+        //    StatusBarLabel.Text = dt.ToString("d", Properties.Resources.Culture) + "    " +
+        //        dt.ToString("t", Properties.Resources.Culture);
+        //}
 
         private void ClearDrawingArea()
         {
@@ -229,8 +350,17 @@ namespace Projekt_TPAL
             pictureGrid.Children.Clear();
             UpdateBtnColor();
             isFileOpen = false;
+            toolsListView.IsEnabled = false;
+            propertiesGrid.Visibility = Visibility.Collapsed;
+            history.Clear();
+            removed.Clear();
+            undoMenuItem.IsEnabled = false;
+            redoMenuItem.IsEnabled = false;
+            closeMenuItem.IsEnabled = false;
+            saveMenuItem.IsEnabled = false;
         }
 
+        SaveFileDialog saveFileDialog;
         private bool SaveFileConfirmation()
         {
             if (MessageBox.Show(Properties.Resources.SaveConfirmation, Properties.Resources.Save, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
@@ -240,26 +370,29 @@ namespace Projekt_TPAL
             }
             else
             {
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog = new SaveFileDialog();
                 saveFileDialog.DefaultExt = ".png";
                 saveFileDialog.Filter = "Image (.png)|*.png";
                 if (saveFileDialog.ShowDialog() == true)
                 {
-                    saveHelper.SaveFile(canvas, saveFileDialog.FileName);
+                    saveProgressBar.Value = 0;
+                    worker.RunWorkerAsync();
+                    //saveHelper.SaveFile(canvas, saveFileDialog.FileName);
 
                     isFileSave = true;
                     return true;
                 }
             }
             return false;
-        }
+        }      
 
         private void UpdateBtnColor(ToolItem toolItem = null)
         {
+            if(tools!=null)
             foreach (var item in tools)
             {
                 if (toolItem != null && toolItem.Name == item.Name)
-                    item.ActiveToolColor = Brushes.Red;
+                    item.ActiveToolColor = Brushes.MediumVioletRed;
                 else
                     item.ActiveToolColor = Brushes.White;
 
@@ -269,9 +402,22 @@ namespace Projekt_TPAL
             }
         }
 
+        private void HideFillClrPicker(IPlugin tool)
+        {
+            if (!tool.canFill)
+            {
+                fillColorPicker.Visibility = Visibility.Collapsed;
+                fillTB.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                fillColorPicker.Visibility = Visibility.Visible;
+                fillTB.Visibility = Visibility.Visible;
+            }
+        }
 
+        #endregion
 
-
-        #endregion       
+        
     }
 }

@@ -106,6 +106,15 @@ namespace Projekt_TPAL.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fill:.
+        /// </summary>
+        public static string Fill {
+            get {
+                return ResourceManager.GetString("Fill", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Help.
         /// </summary>
         public static string Help {
@@ -160,6 +169,24 @@ namespace Projekt_TPAL.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Plugins.
+        /// </summary>
+        public static string Plugins {
+            get {
+                return ResourceManager.GetString("Plugins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Plugins not found.
+        /// </summary>
+        public static string PluginsError {
+            get {
+                return ResourceManager.GetString("PluginsError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Polish.
         /// </summary>
         public static string PolishMenuItem {
@@ -201,6 +228,24 @@ namespace Projekt_TPAL.Properties {
         public static string SaveConfirmation {
             get {
                 return ResourceManager.GetString("SaveConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stroke:.
+        /// </summary>
+        public static string Stroke {
+            get {
+                return ResourceManager.GetString("Stroke", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thickness:.
+        /// </summary>
+        public static string StrokeThickness {
+            get {
+                return ResourceManager.GetString("StrokeThickness", resourceCulture);
             }
         }
         

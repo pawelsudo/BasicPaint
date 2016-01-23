@@ -19,6 +19,7 @@ namespace Plugin.CircleTool
         public Brush stroke { get; set; }
         public double strokeThickness { get; set; }
         public System.Drawing.Bitmap btnBackground { get; set; }
+        public bool canFill { get; set; }
         private string name;
 
         public void Initialize()
@@ -38,6 +39,7 @@ namespace Plugin.CircleTool
             this.fill = fill;
             this.stroke = stroke;
             this.strokeThickness = strokeThickness;
+            canFill = true;
 
             return this;
         }

@@ -24,9 +24,9 @@ namespace Projekt_TPAL.Helpers
             return assemblies;
         }
 
-        public List<IPlugin> InitializePlugins()
+        public List<IPlugin> InitializePlugins(string path)
         {
-            var assemblies = GetAssemblies("Plugins");
+            var assemblies = GetAssemblies(path);//("Plugins");
 
             List<IPlugin> plugins = new List<IPlugin>();
 
